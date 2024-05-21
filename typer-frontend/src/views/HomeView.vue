@@ -15,7 +15,6 @@
 
 <script>
     import axios from 'axios';
-    import groupItem from '../components/groupItem.vue';
 
     export default {
         data() {
@@ -48,9 +47,6 @@
             test: function(id) {
                 this.$router.push({ name: 'EditGroup', params: { id: id } });
             }
-        },
-        components: {
-            groupItem
         }
     }   
 </script>
