@@ -21,17 +21,22 @@
         },
         methods: {
             handleSubmit: async function() {
-                const {word, translation, wordLanguageId, translationLanguageId, groupId} = this;
+                try {
+                    const {word, translation, wordLanguageId, translationLanguageId, groupId} = this;
+                    const pair = {
+                        word,
+                        translation,
+                        wordLanguageId,
+                        translationLanguageId,
+                        groupId
+                    };
 
-                console.log(this.groupId);
-
-                await axios.post('http://localhost:3000/api/pairs/add', {
-                   word, 
-                   translation,
-                   wordLanguageId,
-                   translationLanguageId,
-                   groupId 
-                })
+                    await axios.post('http://localhost:3000/api/pairs/add', pair);
+                    this.$emit('confirmed', pair);
+                }
+                catch(error) {
+                    console.error(`Error while adding pair to group: ${error}`);
+                }
             }
         },
         props: [
