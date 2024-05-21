@@ -12,7 +12,13 @@
         methods: {
             deleteItem: async function(){
                 const groupId = this.documentInfo['_id'];
-                await axios.post('http://localhost:3000/api/groups/delete', { 'groupId': groupId });
+                try {
+                    await axios.post('http://localhost:3000/api/groups/delete', { 'groupId': groupId });
+                    this.$emit('deleted', index);
+                }
+                catch(error) {
+                    console.log('failed to delete group with error: ' + error)
+                }
             }
         },
         props: [

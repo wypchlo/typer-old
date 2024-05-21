@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const wordsSchema = new Schema({
+const pairsSchema = new Schema({
     word: {
         type: String,
         default: '',
@@ -27,4 +27,4 @@ const wordsSchema = new Schema({
     }
 })
 
-module.exports = mongoose.model('Words', wordsSchema);
+module.exports = mongoose.model('Pairs', pairsSchema);

@@ -1,7 +1,8 @@
 <template>
     <div>
         <form @submit.prevent="handleSubmit()">
-            <label> Group name: <input type="text" v-model="groupName"> </label>
+            <label> name: <input type="text" v-model="name"> </label> <br>
+            <label> description: <input type="text" v-model="description"> </label> <br>
             <input type="submit">
         </form>
         <div ref="status"> {{ status }} </div>
@@ -15,14 +16,19 @@
     export default{
         data() {
             return {
-                groupName: null,
+                name: null,
+                description: null,
                 status: null
             }
         },
         methods: {
             handleSubmit: async function(){
                 try { 
-                    await axios.post('http://localhost:3000/api/groups/add', { groupName: this.groupName });
+                    const group = {
+                        name: this.name,
+                        description: this.description
+                    }
+                    await axios.post('http://localhost:3000/api/groups/add', group);
                     this.status = 'sent';
                 }
                 catch(error) {
