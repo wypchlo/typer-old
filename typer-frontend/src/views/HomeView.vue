@@ -1,9 +1,8 @@
 <template>
     <div>
         <h1 class="text-center text-3xl font-bold"> Recently used groups </h1>
-        <div class="flex justify-center py-20" id="container">
-            <div @click="test(group['_id'])" class="inline-block h-80 w-60 text-center pt-2 bg-gray-100 rounded-xl" v-for="(group, index) in groups" :key="group.name" @deleted="removeGroup(index)" :documentInfo="group"> 
-                
+        <div class="flex justify-around py-20" id="container">
+            <div @click="test(group['_id'])" class="inline-block h-80 w-60 text-center pt-2 bg-gray-100 rounded-xl" v-for="(group, index) in groups" :key="group.name" @deleted="removeGroup(index)" :documentInfo="group">  
                 <h1 class="text-3xl"> {{ index }}. {{ group.name }} </h1>
                 <h5> {{ group.description }} </h5>
                 <button @click.stop="deleteItem(group, index)"> Delete </button>
@@ -45,7 +44,7 @@
                 } 
             },
             test: function(id) {
-                this.$router.push({ name: 'EditGroup', params: { id: id } });
+                this.$router.push({ name: 'GroupDetails', params: { id: id } });
             }
         }
     }   

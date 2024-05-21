@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const Groups = require('../schemas/groupsSchema');
+const Pairs = require('../schemas/pairsSchema');
 
 router.get('/', async(req, res) => { 
     try {
         const groups = await Groups.find();
         res.status(200).json(groups);
     }
-    catch (error) {
+    catch(error) {
         console.error(`Error fetching groups: ${error}`);
         res.status(500).json({ error: 'Failed to fetch groups' });
     }
@@ -47,7 +48,7 @@ router.put('/:id', async(req, res) => {
 
         if(!UpdatedGroup) return res.status(404).json({ error: 'Group not found' });
     }
-    catch (error) {
+    catch(error) {
         console.error(`Error updating group: ${error}`);
         res.status(500).json({ error: 'Failed updating group' });
     }
@@ -59,6 +60,8 @@ router.delete('/:id', async(req, res) => {
 
         const ids = req.body.ids;
         if(ids) {
+            await Pairs.deleteMany({ groupId: { $in: ids } });
+
             const result = await Groups.deleteMany({ _id: { $in: ids } });
             if(result.deletedCount === 0 ) return res.status(404).json({ error: 'No groups found with the specified IDs' });
 
@@ -70,6 +73,8 @@ router.delete('/:id', async(req, res) => {
         const id = req.params.id;
         if(!id) return res.status(400).json({ error: 'Group ID is required' });
 
+        await Pairs.deleteMany({ groupId: id })
+
         const result = await Groups.deleteOne({ _id: id });
         if(result.deletedCount === 0) return res.status(404).json({ error: 'Group not found' });
 
@@ -80,5 +85,19 @@ router.delete('/:id', async(req, res) => {
         res.status(500).json({ error: 'Failed to delete group' });
     }
 });
+
+router.get('/:id', async(req, res) => {
+    try {
+        const id = req.params.id;
+        if(!id) return res.status(400).json({ error: 'Group ID is required' });
+        
+        const group = await Groups.findOne({ _id: id });    
+        res.status(200).json(group);
+    }
+    catch(error) {
+        console.error(`Error fetching group: ${error}`);
+        res.status(500).json({ error: 'Failed to fetch group' });
+    }
+})
 
 module.exports = router;

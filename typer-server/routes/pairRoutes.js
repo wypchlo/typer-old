@@ -7,7 +7,7 @@ router.get('/', async(req, res) => {
         const pairs = await Pairs.find();
         res.status(200).json(pairs);
     }
-    catch (error) {
+    catch(error) {
         console.error(`Error fetching pair: ${error}`);
         res.status(500).json({ error: 'Failed to fetch pairs' });
     }
@@ -24,6 +24,8 @@ router.post('/add', async(req, res) => {
             translationLanguageId,
             groupId
         });
+        
+        console.log(word, translation, wordLanguageId, translationLanguageId, groupId);
 
         await newPair.save();
 
@@ -57,7 +59,7 @@ router.put('/:id', async(req, res) => {
 
         if(!UpdatedPair) return res.status(404).json({ error: 'Pair not found' });
     }
-    catch (error) {
+    catch(error) {
         console.error(`Error updating pair: ${error}`);
         res.status(500).json({ error: 'Failed updating pair' });
     }
@@ -88,6 +90,20 @@ router.delete('/:id', async(req, res) => {
     catch(error) {
         console.error(`Error deleting pair: ${error}`);
         res.status(500).json({ error: 'Failed to delete pair' });
+    }
+});
+
+router.get('/group/:id', async(req, res) => {
+    try {
+        const id = req.params.id;
+        if(!id) return res.status(400).json({ error: 'Group ID is required' });
+
+        const pairsOfGroup = await Pairs.find({ groupId: id });
+        return res.status(200).json(pairsOfGroup)
+    }
+    catch(error) {
+        console.error(`Error fetching pairs of group: ${error}`);
+        return res.status(500).json({ error: 'Failed to fetch pairs of group' }) 
     }
 });
 

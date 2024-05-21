@@ -7,8 +7,8 @@ const routes = [
         component: () => import('../views/HomeView.vue'),
     },
     {
-        path: '/group/edit/:id',
-        name: 'EditGroup',
+        path: '/group/details/:id',
+        name: 'GroupDetails',
         component: () => import('../views/GroupDetailsView.vue')
     },
     {
