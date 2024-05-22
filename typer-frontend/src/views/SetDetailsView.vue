@@ -8,32 +8,47 @@
         <section class="text-center py-6 flex flex-col items-center">
             <h1 class="text-3xl font-medium py-6"> Pairs </h1>
 
-            <div v-if="pairs.length" id="wordContainer" class="flex-col">
-                <div v-for="(pair, index) in pairs" :key="pair" class="flex flex-col justify-center my-2 h-80 w-60 text-center pt-2 bg-gray-100 rounded-xl">
-                    <h1 class="text-2xl font-medium"> {{ pair.word }} </h1>
-                    <hr>
-                    <h1 class="text-2xl font-medium"> {{ pair.translation }} </h1>
+            <!-- List of pairs -->
+
+            <div id="wordContainer" class="flex flex-col">
+                <div v-for="(pair, index) in pairs" :key="pair" class="flex flex-col justify-around my-2 h-60 w-60 text-center pt-2 bg-gray-100 rounded-xl">
+                    <div class="flex flex-col">
+                        <h1 class="text-2xl font-medium"> {{ pair.word }} </h1>
+                        <p class="text-gray-500"> {{ idLangs[pair.wordLanguageId] }} </p>
+                        <br>
+                        <h1 class="text-2xl font-medium"> {{ pair.translation }} </h1>
+                        <p class="text-gray-500"> {{ idLangs[pair.translationLanguageId] }} </p>
+                    </div>
 
                     <button @click.self="deletePair(pair._id, index)"> delete </button>
                 </div>
             </div>
 
-            <div v-else class="py-6">
-                <h1 class="text-2xl font-light"> This set has no pairs </h1>
-            </div>
+            <!-- Add a new pair --> 
+            
+            <button v-if="tempPair === null" @click="tempPair = {}" class="flex flex-col items-center justify-around my-2 h-60 w-60 text-center pt-2 bg-gray-100 rounded-xl"> 
+                <h1 class="text-2xl font-medium"> Add pair </h1>
+            </button>
 
-            <form v-if="tempPair" @submit.prevent="addPair()" class=" bg-gray-50 flex flex-col w-fit h-fit p-6"> 
-                <label> <p> word: </p> <input type="text" v-model="tempPair.word"> </label>
-                <select v-model="selectedLangs.wordLanguage">
-                    <option disabled selected :value="null"> Select a language </option>
-                    <option v-for="lang in langs" :key="lang" :value="lang._id"> {{ lang.language }} </option>
-                </select>
-                <label> <p> translation: </p> <input type="text" v-model="tempPair.translation"> </label>
+            <form v-if="tempPair" @submit.prevent="addPair()" class="flex flex-col justify-around my-2 h-60 w-60 text-center pt-2 bg-gray-100 rounded-xl"> 
+                <div>
+                    <input type="text" v-model="tempPair.word" placeholder="word" class="bg-gray-100 text-2xl font-medium text-center w-full">
+                    <select v-model="tempPair.wordLanguageId" class="text-center bg-gray-100 text-gray-500">
+                        <option disabled selected :value="undefined"> Select a language </option>
+                        <option v-for="lang in langs" :key="lang" :value="lang._id"> {{ lang.language }} </option>
+                    </select>
+                </div>
+
+                <div>
+                    <input type="text" v-model="tempPair.translation" placeholder="translation" class="text-2xl font-medium bg-gray-100 text-center w-full">
+                    <select v-model="tempPair.translationLanguageId" class="text-center bg-gray-100 text-gray-500">
+                        <option disabled selected :value="undefined"> Select a language </option>
+                        <option v-for="lang in langs" :key="lang" :value="lang._id"> {{ lang.language }} </option>
+                    </select>
+                </div>
 
                 <button type="submit"> Confirm </button>
             </form>
-
-            <button class="text-2xl p-6 border" @click="preparePair()"> Add a pair </button>
         </section>
     </div>
 </template>
@@ -46,13 +61,10 @@
     export default {
         data() {
             return {
-                selectedLangs: {
-                    wordLanguage: null,
-                    translationLanguage: null
-                },
                 set: {},
                 pairs: [],
                 langs: [],
+                idLangs: {},
                 tempPair: null
             }
         },
@@ -71,16 +83,7 @@
             getLanguages: async function() {
                 const { data } = await axios.get(`${BASE_API}/languages`);
                 this.langs = data;
-            },
-
-            preparePair: function() {
-                this.tempPair = {
-                    word: null,
-                    translation: null,
-                    wordLanguageId: null,
-                    translationLanguageId: null,
-                    setId: this.set['_id']
-                }
+                for(let lang of data) this.idLangs[lang['_id']] = lang.language;
             },
             deletePair: async function(id, index) {
                 try {
@@ -94,17 +97,10 @@
             },
             addPair: async function() {
                 try {
-                    const { word, translation, wordLanguageId, translationLanguageId, setId } = this.tempPair;
-                    const pair = {
-                        word,
-                        translation,
-                        wordLanguageId,
-                        translationLanguageId,
-                        setId
-                    };
-
-                    await axios.post(`${BASE_API}/pairs/add`, pair);
+                    this.tempPair.setId = this.set._id;
+                    await axios.post(`${BASE_API}/pairs/add`, this.tempPair);
                     this.tempPair = null;
+
                     await this.getPairs();
                 }
                 catch(error) {

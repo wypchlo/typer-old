@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Pairs = require('../schemas/pairsSchema');
+const deletePairs = require('../modules/deletePairs');
 
 router.get('/', async(req, res) => { 
     try {
@@ -24,8 +25,6 @@ router.post('/add', async(req, res) => {
             translationLanguageId,
             setId
         });
-        
-        console.log(word, translation, wordLanguageId, translationLanguageId, setId);
 
         await newPair.save();
 
@@ -66,31 +65,8 @@ router.put('/:id', async(req, res) => {
 });
 
 router.delete('/:id', async(req, res) => {
-    try {
-        // Multiple ids provided
-
-        const ids = req.body.ids;
-        if(ids) {
-            const result = await Pairs.deleteMany({ _id: { $in: ids } });
-            if(result.deletedCount === 0 ) return res.status(404).json({ error: 'No pairs found with the specified IDs' });
-
-            return res.status(200).json({ message: 'Pairs deleted successfully' })
-        }
-
-        // One id provided
-
-        const id = req.params.id;
-        if(!id) return res.status(400).json({ error: 'Pair ID is required' });
-
-        const result = await Pairs.deleteOne({ _id: id });
-        if(result.deletedCount === 0) return res.status(404).json({ error: 'Pair not found' });
-
-        res.status(200).json({ message: 'Pair deleted successfully' });
-    }
-    catch(error) {
-        console.error(`Error deleting pair: ${error}`);
-        res.status(500).json({ error: 'Failed to delete pair' });
-    }
+    const response = await deletePairs(req.params.id ? req.params.id : req.body.ids);
+    res.status(response.status).json(response);
 });
 
 router.get('/set/:id', async(req, res) => {

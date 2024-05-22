@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Sets = require('../schemas/setsSchema');
 const Pairs = require('../schemas/pairsSchema');
+const deletePairs = require('../modules/deletePairs');
 
 router.get('/', async(req, res) => { 
     try {
@@ -60,7 +61,7 @@ router.delete('/:id', async(req, res) => {
 
         const ids = req.body.ids;
         if(ids) {
-            await Pairs.deleteMany({ setId: { $in: ids } });
+            await deletePairs(ids);
 
             const result = await Sets.deleteMany({ _id: { $in: ids } });
             if(result.deletedCount === 0 ) return res.status(404).json({ error: 'No sets found with the specified IDs' });
