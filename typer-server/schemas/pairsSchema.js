@@ -5,12 +5,12 @@ const pairsSchema = new Schema({
     word: {
         type: String,
         default: '',
-        required: [true, 'word translation is required']
+        required: [true, 'Word is required']
     },
     translation: {
         type: String,
         default: '',
-        required: [true, 'word translation is required']
+        required: [true, 'Translation is required']
     },
     wordLanguageId: {
         type: String,
@@ -24,10 +24,10 @@ const pairsSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    groupId: {
+    setId: {
         type: String,
         default: '',
-        required: [true, 'group is required']
+        required: [true, 'Set ID is required']
     }
 })
 

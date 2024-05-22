@@ -26,9 +26,9 @@ app.use(express.static('public'));
 
 console.log('Initializing routes...');
 
-app.use('/api/groups', require('./routes/groupRoutes'));
-app.use('/api/pairs', require('./routes/pairRoutes'));
-app.use('/api/languages', require('./routes/languageRoutes'));
+app.use('/api/sets', require('./routes/setsRoutes'));
+app.use('/api/pairs', require('./routes/pairsRoutes'));
+app.use('/api/languages', require('./routes/languagesRoutes'));
 
 // listen on port
 

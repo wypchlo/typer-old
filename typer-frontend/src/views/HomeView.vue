@@ -1,24 +1,24 @@
 <template>
     <div>
-        <h1 class="text-center py-6 text-4xl font-medium"> Recently used groups </h1> <hr>
+        <h1 class="text-center py-6 text-4xl font-medium"> Recent sets </h1> <hr>
 
         <div id="container" class="flex justify-center gap-4 py-20">
-            <button @click="showGroupDetails(group._id)" v-for="(group, index) in groups" :key="group.name" class="justify-around items-center flex flex-col h-80 w-60 text-center pt-2 bg-gray-100 rounded-xl">
+            <button @click="showSetDetails(set._id)" v-for="(set, index) in sets" :key="set.name" class="justify-around items-center flex flex-col h-80 w-60 text-center pt-2 bg-gray-100 rounded-xl">
                 <div>
-                    <h1 class="text-3xl"> {{ group.name }} </h1>
-                    <p> {{ group.description }} </p>
+                    <h1 class="text-3xl"> {{ set.name }} </h1>
+                    <p> {{ set.description }} </p>
                 </div>
-                <button @click.stop="deleteGroup(group, index)"> Delete </button>
+                <button @click.stop="deleteset(set, index)"> Delete </button>
             </button>
 
-            <button v-if="tempGroup == null" @click="tempGroup = {}" class="flex flex-col justify-center items-center h-80 w-60 pt-2 bg-gray-100 rounded-xl">
-                <p class="text-3xl block"> Add new group </p>
+            <button v-if="tempset == null" @click="tempset = {}" class="flex flex-col justify-center items-center h-80 w-60 pt-2 bg-gray-100 rounded-xl">
+                <p class="text-3xl block"> Add new set </p>
             </button>
 
-            <form v-else @submit.prevent="addGroup()" class="flex flex-col justify-around items-center h-80 w-60 pt-2 bg-gray-100 rounded-xl">
+            <form v-else @submit.prevent="addset()" class="flex flex-col justify-around items-center h-80 w-60 pt-2 bg-gray-100 rounded-xl">
                 <div>
-                    <input type="text" v-model="tempGroup.name" placeholder="name" class="text-3xl text-center w-full bg-gray-100">
-                    <input type="text" v-model="tempGroup.description" placeholder="description" class="w-full bg-gray-100 text-center">
+                    <input type="text" v-model="tempset.name" placeholder="name" class="text-3xl text-center w-full bg-gray-100">
+                    <input type="text" v-model="tempset.description" placeholder="description" class="w-full bg-gray-100 text-center">
                 </div>
                 <button type="submit"> Submit </button>
             </form>
@@ -48,37 +48,37 @@
     export default {
         data() {
             return{
-                groups: [],
+                sets: [],
                 langs: [],
                 
                 tempLang: null,
-                tempGroup: null
+                tempset: null
             }
         },
         async mounted() {
-            await Promise.all([ this.getGroups(), this.getLangs() ]);
+            await Promise.all([ this.getsets(), this.getLangs() ]);
         },
         methods: {
-            getGroups: async function() {  
-                const { data } = await axios.get(`${BASE_API}/groups`);
-                this.groups = data; 
+            getsets: async function() {  
+                const { data } = await axios.get(`${BASE_API}/sets`);
+                this.sets = data; 
             },
             getLangs: async function() {
                 const { data } = await axios.get(`${BASE_API}/languages`);
                 this.langs = data;
             },
-            addGroup: async function(){
-                await axios.post('http://localhost:3000/api/groups/add', this.tempGroup);
-                this.tempGroup = null;
-                this.getGroups();
+            addset: async function(){
+                await axios.post('http://localhost:3000/api/sets/add', this.tempset);
+                this.tempset = null;
+                this.getsets();
             },
-            deleteGroup: async function(group, index) {
+            deleteset: async function(set, index) {
                 try {
-                    await axios.delete(`${BASE_API}/groups/${group._id}`);
-                    this.groups.splice(index, 1);
+                    await axios.delete(`${BASE_API}/sets/${set._id}`);
+                    this.sets.splice(index, 1);
                 }
                 catch(error) {
-                    console.log('failed to delete group with error: ' + error)
+                    console.log('failed to delete set with error: ' + error)
                 } 
             },
             addLang: async function() {
@@ -90,8 +90,8 @@
                 await axios.delete(`${BASE_API}/languages/${id}`,);
                 this.langs.splice(index, 1);
             },
-            showGroupDetails: function(id) {
-                this.$router.push({ name: 'GroupDetails', params: { id: id } });
+            showSetDetails: function(id) {
+                this.$router.push({ name: 'SetDetails', params: { id: id } });
             }
         }
     }   

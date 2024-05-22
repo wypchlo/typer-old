@@ -15,17 +15,17 @@ router.get('/', async(req, res) => {
 
 router.post('/add', async(req, res) => {
     try {
-        const { word, translation, wordLanguageId, translationLanguageId, groupId } = req.body;
+        const { word, translation, wordLanguageId, translationLanguageId, setId } = req.body;
 
         const newPair = new Pairs({
             word, 
             translation,
             wordLanguageId,
             translationLanguageId,
-            groupId
+            setId
         });
         
-        console.log(word, translation, wordLanguageId, translationLanguageId, groupId);
+        console.log(word, translation, wordLanguageId, translationLanguageId, setId);
 
         await newPair.save();
 
@@ -93,17 +93,17 @@ router.delete('/:id', async(req, res) => {
     }
 });
 
-router.get('/group/:id', async(req, res) => {
+router.get('/set/:id', async(req, res) => {
     try {
         const id = req.params.id;
-        if(!id) return res.status(400).json({ error: 'Group ID is required' });
+        if(!id) return res.status(400).json({ error: 'Set ID is required' });
 
-        const pairsOfGroup = await Pairs.find({ groupId: id }).sort({ createdDate: -1 });
-        return res.status(200).json(pairsOfGroup)
+        const pairsOfSet = await Pairs.find({ setId: id }).sort({ createdDate: -1 });
+        return res.status(200).json(pairsOfSet)
     }
     catch(error) {
-        console.error(`Error fetching pairs of group: ${error}`);
-        return res.status(500).json({ error: 'Failed to fetch pairs of group' }) 
+        console.error(`Error fetching pairs of set: ${error}`);
+        return res.status(500).json({ error: 'Failed to fetch pairs of set' }) 
     }
 });
 

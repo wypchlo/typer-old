@@ -1,8 +1,8 @@
 <template> 
-    <div v-if="group">
+    <div v-if="set">
         <header class="text-center py-6">
-            <h1 class="text-4xl font-medium"> {{ group.name }} </h1>
-            <p class="font-light text-2xl"> {{ group.description }} </p>
+            <h1 class="text-4xl font-medium"> {{ set.name }} </h1>
+            <p class="font-light text-2xl"> {{ set.description }} </p>
         </header>
         <hr>
         <section class="text-center py-6 flex flex-col items-center">
@@ -19,7 +19,7 @@
             </div>
 
             <div v-else class="py-6">
-                <h1 class="text-2xl font-light"> This group has no pairs </h1>
+                <h1 class="text-2xl font-light"> This set has no pairs </h1>
             </div>
 
             <form v-if="tempPair" @submit.prevent="addPair()" class=" bg-gray-50 flex flex-col w-fit h-fit p-6"> 
@@ -50,23 +50,23 @@
                     wordLanguage: null,
                     translationLanguage: null
                 },
-                group: {},
+                set: {},
                 pairs: [],
                 langs: [],
                 tempPair: null
             }
         },
         async mounted() {
-            await Promise.all([this.getGroup(), this.getPairs(), this.getLanguages()]);
+            await Promise.all([this.getset(), this.getPairs(), this.getLanguages()]);
         },
         methods: {
             getPairs: async function() {
-                const { data } = await axios.get(`${BASE_API}/pairs/group/${this.$route.params.id}`);
+                const { data } = await axios.get(`${BASE_API}/pairs/set/${this.$route.params.id}`);
                 this.pairs = data;
             },
-            getGroup: async function() {
-                const { data } = await axios.get(`${BASE_API}/groups/${this.$route.params.id}`);
-                this.group = data;
+            getset: async function() {
+                const { data } = await axios.get(`${BASE_API}/sets/${this.$route.params.id}`);
+                this.set = data;
             },
             getLanguages: async function() {
                 const { data } = await axios.get(`${BASE_API}/languages`);
@@ -79,7 +79,7 @@
                     translation: null,
                     wordLanguageId: null,
                     translationLanguageId: null,
-                    groupId: this.group['_id']
+                    setId: this.set['_id']
                 }
             },
             deletePair: async function(id, index) {
@@ -94,13 +94,13 @@
             },
             addPair: async function() {
                 try {
-                    const { word, translation, wordLanguageId, translationLanguageId, groupId } = this.tempPair;
+                    const { word, translation, wordLanguageId, translationLanguageId, setId } = this.tempPair;
                     const pair = {
                         word,
                         translation,
                         wordLanguageId,
                         translationLanguageId,
-                        groupId
+                        setId
                     };
 
                     await axios.post(`${BASE_API}/pairs/add`, pair);
@@ -108,7 +108,7 @@
                     await this.getPairs();
                 }
                 catch(error) {
-                    console.error(`Error while adding pair to group: ${error}`);
+                    console.error(`Error while adding pair to set: ${error}`);
                 }
             }
         }

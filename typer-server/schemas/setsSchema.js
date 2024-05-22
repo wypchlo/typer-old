@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const groupsSchema = new Schema({
+const setsSchema = new Schema({
     name: {
         type: String,
         default: '',
-        required: [true, 'group name is required']
+        required: [true, 'Name is required']
     },
     description: {
         type: String,
@@ -13,4 +13,4 @@ const groupsSchema = new Schema({
     }
 });
 
-module.exports = mongoose.model('Groups', groupsSchema);
+module.exports = mongoose.model('Sets', setsSchema);

@@ -5,7 +5,7 @@ const languagesSchema = new Schema({
     language: {
         type: String,
         default: '',
-        required: [true, 'language is required']
+        required: [true, 'Language is required']
     }
 })
 
