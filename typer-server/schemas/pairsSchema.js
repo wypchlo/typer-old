@@ -20,6 +20,10 @@ const pairsSchema = new Schema({
         type: String,
         default: ''
     },
+    createdDate: {
+        type: Date,
+        default: Date.now
+    },
     groupId: {
         type: String,
         default: '',

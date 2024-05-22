@@ -3,12 +3,18 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
+console.clear();
+
 // db connection
 
-mongoose.connect('mongodb://localhost:27017/typer', { useNewUrlParser: true, useUnifiedTopology: true })
-    .catch(console.log("couldn't connect to the database"));
+console.log('Connecting to the database...');
+
+mongoose.connect('mongodb://localhost:27017/typer')
+    .catch((error) => console.log(`Error while connecting to the database: ${error}`));
 
 // basic app setup
+
+console.log('Setting up app...')
 
 const app = express();
 
@@ -18,13 +24,16 @@ app.use(express.static('public'));
 
 // routes
 
+console.log('Initializing routes...');
+
 app.use('/api/groups', require('./routes/groupRoutes'));
 app.use('/api/pairs', require('./routes/pairRoutes'));
+app.use('/api/languages', require('./routes/languageRoutes'));
 
 // listen on port
 
 const port = 3000;
 
 app.listen(port, () => {
-    console.log('server is running on http://localhost:'+'3000')
+    console.log('Server is running on http://localhost:'+'3000')
 });

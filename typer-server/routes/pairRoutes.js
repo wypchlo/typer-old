@@ -98,7 +98,7 @@ router.get('/group/:id', async(req, res) => {
         const id = req.params.id;
         if(!id) return res.status(400).json({ error: 'Group ID is required' });
 
-        const pairsOfGroup = await Pairs.find({ groupId: id });
+        const pairsOfGroup = await Pairs.find({ groupId: id }).sort({ createdDate: -1 });
         return res.status(200).json(pairsOfGroup)
     }
     catch(error) {
