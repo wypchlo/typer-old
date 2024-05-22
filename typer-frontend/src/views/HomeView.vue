@@ -72,10 +72,10 @@
             }
         },
         async mounted() {
-            await Promise.all([ this.getsets(), this.getLangs() ]);
+            await Promise.all([ this.getSets(), this.getLangs() ]);
         },
         methods: {
-            getsets: async function() {  
+            getSets: async function() {  
                 const { data } = await axios.get(`${BASE_API}/sets`);
                 this.sets = data; 
             },
@@ -86,7 +86,7 @@
             addset: async function(){
                 await axios.post('http://localhost:3000/api/sets/add', this.tempSet);
                 this.tempSet = null;
-                this.getsets();
+                this.getSets();
             },
             deleteset: async function(set, index) {
                 try {

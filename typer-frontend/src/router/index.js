@@ -10,6 +10,11 @@ const routes = [
         path: '/set/details/:id',
         name: 'SetDetails',
         component: () => import('../views/SetDetailsView.vue')
+    },
+    {
+        path: '/set/practice/:id',
+        name: 'SetPractice',
+        component: () => import('../views/SetPracticeView.vue')
     }
 ];
 

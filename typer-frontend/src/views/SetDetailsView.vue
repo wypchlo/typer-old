@@ -4,7 +4,9 @@
             <h1 class="text-4xl font-medium"> {{ set.name }} </h1>
             <p class="font-light text-2xl"> {{ set.description }} </p>
         </header>
+
         <hr>
+
         <section class="text-center py-6 flex flex-col items-center">
             <h1 class="text-3xl font-medium py-6"> Pairs </h1>
 
@@ -50,6 +52,12 @@
                 <button type="submit"> Confirm </button>
             </form>
         </section>
+
+        <hr>
+
+        <footer class="text-center py-6">
+            <h1 class="text-4xl font-medium"><router-link :to="{ name: 'SetPractice', params: { id: set._id } }"> Practice </router-link></h1>
+        </footer>
     </div>
 </template>
 
@@ -69,14 +77,14 @@
             }
         },
         async mounted() {
-            await Promise.all([this.getset(), this.getPairs(), this.getLanguages()]);
+            await Promise.all([this.getSet(), this.getPairs(), this.getLanguages()]);
         },
         methods: {
             getPairs: async function() {
                 const { data } = await axios.get(`${BASE_API}/pairs/set/${this.$route.params.id}`);
                 this.pairs = data;
             },
-            getset: async function() {
+           getSet: async function() {
                 const { data } = await axios.get(`${BASE_API}/sets/${this.$route.params.id}`);
                 this.set = data;
             },
