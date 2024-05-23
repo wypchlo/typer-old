@@ -14,11 +14,11 @@ const pairsSchema = new Schema({
     },
     wordLanguageId: {
         type: String,
-        default: ''
+        default: undefined
     },
     translationLanguageId: {
         type: String,
-        default: ''
+        default: undefined
     },
     createdDate: {
         type: Date,

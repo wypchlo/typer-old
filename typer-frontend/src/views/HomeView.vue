@@ -8,24 +8,16 @@
             <button @click="showSetDetails(set._id)" v-for="(set, index) in sets" :key="set.name" class="justify-around items-center flex flex-col h-80 w-60 text-center pt-2 bg-gray-100 rounded-xl">
                 <div>
                     <h1 class="text-3xl"> {{ set.name }} </h1>
-                    <p> {{ set.description }} </p>
+                    <p class="text-gray-500"> {{ set.description }} </p>
                 </div>
-                <button @click.stop="deleteset(set, index)"> Delete </button>
+                <button @click.stop="deleteSet(set, index)"><img class="h-6 w-6" src="/src/assets/icons/delete.svg"></button>
             </button>
             
             <!-- Add new set button -->
 
-            <button v-if="tempSet === null" @click="tempSet = {}" class="flex flex-col justify-center items-center h-80 w-60 pt-2 bg-gray-100 rounded-xl">
-                <p class="text-3xl block"> Add set </p>
-            </button>
+            <button v-if="!addingSet" @click="addingSet++" class="flex flex-col justify-center items-center h-80 w-60 pt-2 bg-gray-100 rounded-xl"> <p class="text-3xl block"> Add set </p> </button>
 
-            <form v-else @submit.prevent="addset()" class="flex flex-col justify-around items-center h-80 w-60 pt-2 bg-gray-100 rounded-xl">
-                <div>
-                    <input type="text" v-model="tempSet.name" placeholder="name" class="text-3xl text-center w-full bg-gray-100">
-                    <input type="text" v-model="tempSet.description" placeholder="description" class="w-full bg-gray-100 text-center">
-                </div>
-                <button type="submit"> Submit </button>
-            </form>
+            <EditableSet v-else @confirmed="addSet"></EditableSet>
         </div>
 
         <hr> <h1 class="text-center text-4xl font-medium py-6"> Languages </h1> <hr>
@@ -50,14 +42,13 @@
                     <button type="submit"> Delete </button>
                 </form>
             </div>
-
-
         </div>
     </div>     
 </template>
 
 <script>
     import axios from 'axios';
+    import EditableSet from '../components/EditableSet.vue';
     
     const BASE_API = 'http://localhost:3000/api';
 
@@ -68,7 +59,8 @@
                 langs: [],
                 
                 tempLang: null,
-                tempSet: null
+                editingIndex: null,
+                addingSet: false
             }
         },
         async mounted() {
@@ -83,12 +75,12 @@
                 const { data } = await axios.get(`${BASE_API}/languages`);
                 this.langs = data;
             },
-            addset: async function(){
-                await axios.post('http://localhost:3000/api/sets/add', this.tempSet);
-                this.tempSet = null;
+            addSet: async function(newSet){
+                await axios.post('http://localhost:3000/api/sets/add', newSet);
+                this.addingSet = false;
                 this.getSets();
             },
-            deleteset: async function(set, index) {
+            deleteSet: async function(set, index) {
                 try {
                     await axios.delete(`${BASE_API}/sets/${set._id}`);
                     this.sets.splice(index, 1);
@@ -109,6 +101,9 @@
             showSetDetails: function(id) {
                 this.$router.push({ name: 'SetDetails', params: { id: id } });
             }
+        },
+        components: {
+            EditableSet
         }
     }   
 </script>

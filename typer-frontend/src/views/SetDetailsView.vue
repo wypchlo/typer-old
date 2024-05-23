@@ -30,7 +30,7 @@
                         </div>
                     </div>
 
-                    <EditablePair @confirmed="editPair" v-if="editingIndex == index" :pair="pair" :langs="langs"></EditablePair>
+                    <EditablePair @confirmed="editPair" v-else :pair="pair" :langs="langs"></EditablePair>
                 </div>
             </div>
 
@@ -38,7 +38,7 @@
             
             <button v-if="!addingPair" @click="addingPair++" class="flex flex-col items-center justify-around my-2 h-60 w-60 text-center pt-2 bg-gray-100 rounded-xl"><h1 class="text-2xl font-medium"> Add pair </h1></button>
 
-            <EditablePair @confirmed="addPair" v-if="addingPair" :pair="savedPair" :langs="langs"></EditablePair>
+            <EditablePair @confirmed="addPair" v-else :pair="savedPair" :langs="langs"></EditablePair>
         </section>
 
         <hr>
