@@ -28,11 +28,11 @@
 
             <!-- Add a new pair --> 
             
-            <button v-if="tempPair === null" @click="tempPair = {}" class="flex flex-col items-center justify-around my-2 h-60 w-60 text-center pt-2 bg-gray-100 rounded-xl"> 
+            <button v-if="!addingPair" @click="addingPair++" class="flex flex-col items-center justify-around my-2 h-60 w-60 text-center pt-2 bg-gray-100 rounded-xl"> 
                 <h1 class="text-2xl font-medium"> Add pair </h1>
             </button>
 
-            <form v-if="tempPair" @submit.prevent="addPair()" class="flex flex-col justify-around my-2 h-60 w-60 text-center pt-2 bg-gray-100 rounded-xl"> 
+            <form v-if="addingPair" @submit.prevent="addPair()" class="flex flex-col justify-around my-2 h-60 w-60 text-center pt-2 bg-gray-100 rounded-xl"> 
                 <div>
                     <input type="text" v-model="tempPair.word" placeholder="word" class="bg-gray-100 text-2xl font-medium text-center w-full">
                     <select v-model="tempPair.wordLanguageId" class="text-center bg-gray-100 text-gray-500">
@@ -45,7 +45,7 @@
                     <input type="text" v-model="tempPair.translation" placeholder="translation" class="text-2xl font-medium bg-gray-100 text-center w-full">
                     <select v-model="tempPair.translationLanguageId" class="text-center bg-gray-100 text-gray-500">
                         <option disabled selected :value="undefined"> Select a language </option>
-                        <option v-for="lang in langs" :key="lang" :value="lang._id"> {{ lang.language }} </option>
+                        <option v-for="lang in langs" :key="lang" :value="lang._id" selected=""> {{ lang.language }} </option>
                     </select>
                 </div>
 
@@ -73,7 +73,8 @@
                 pairs: [],
                 langs: [],
                 idLangs: {},
-                tempPair: null
+                tempPair: {},
+                addingPair: false
             }
         },
         async mounted() {
@@ -107,7 +108,10 @@
                 try {
                     this.tempPair.setId = this.set._id;
                     await axios.post(`${BASE_API}/pairs/add`, this.tempPair);
-                    this.tempPair = null;
+
+                    const { wordLanguageId, translationLanguageId } = this.tempPair;
+                    this.tempPair = { wordLanguageId, translationLanguageId };
+                    this.addingPair = false;
 
                     await this.getPairs();
                 }
