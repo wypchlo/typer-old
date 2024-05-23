@@ -29,26 +29,28 @@
 
         <hr> <h1 class="text-center text-4xl font-medium py-6"> Languages </h1> <hr>
         
-        <div id="container" class="flex flex-col justify-center items-center pt-6 gap-4">
+        <div id="container" class="flex flex-wrap justify-center items-center py-20 gap-4">
             <!-- List of languages -->
 
-            <div v-for="(lang, index) in langs" :key="lang" class="flex flex-col text-center h-20 w-96 bg-gray-100 rounded-xl justify-center">
-                <h1 class="text-3xl"> {{ lang.language }} </h1>
-                <button @click.stop="deleteLang(lang._id, index)"> Delete </button>
+            <div v-for="(lang, index) in langs" :key="lang" class="flex items-center text-left h-20 w-96 bg-gray-100 rounded-xl justify-between px-4">
+                <h1 class="text-2xl"> {{ lang.language }} </h1>
+
+                <div class="flex gap-4">
+                    <button @click.stop="deleteLang(lang._id, index)"><img src="/src/assets/icons/delete.svg" class="w-6 h-6"></button>
+                    <button><img src="/src/assets/icons/edit.svg" class="w-6 h-6"></button>
+                </div>
             </div>
             
             <!-- Add a new language -->
 
             <button v-if="tempLang === null" @click="tempLang = ''" class="flex flex-col items-center h-20 w-96 bg-gray-100 rounded-xl justify-center">
-                <h1 class="text-3xl"> Add language </h1>
+                <h1 class="text-2xl"> Add language </h1>
             </button>
 
-            <div v-else class="flex flex-col text-center h-20 w-96 bg-gray-100 rounded-xl gap-4 justify-center">
-                <form @submit.prevent="addLang()"> 
-                    <input type="text" v-model="tempLang" class="text-3xl text-center bg-gray-100" placeholder="language">
-                    <button type="submit"> Delete </button>
-                </form>
-            </div>
+            <form v-else @submit.prevent="addLang()" class="flex items-center h-20 w-96 bg-gray-100 rounded-xl justify-between px-4"> 
+                <input type="text" v-model="tempLang" class="text-2xl texcenter bg-gray-100 w-2/3" placeholder="language">
+                <button type="submit"><img src="/src/assets/icons/check.svg" class="w-6 h-6"></button>
+            </form>
         </div>
     </div>     
 </template>

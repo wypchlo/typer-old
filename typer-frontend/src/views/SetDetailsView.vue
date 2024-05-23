@@ -7,35 +7,30 @@
 
         <hr>
 
-        <section class="text-center py-6 flex flex-col items-center">
-            <h1 class="text-3xl font-medium py-6"> Pairs </h1>
-
+        <section class="text-center py-20 flex items-center justify-center gap-4">
             <!-- List of pairs -->
+            <div v-for="(pair, index) in pairs" :key="pair" class="flex flex-col justify-around my-2 h-60 w-60 text-center pt-2 bg-gray-100 rounded-xl">
 
-            <div id="wordContainer" class="flex flex-col">
-                <div v-for="(pair, index) in pairs" :key="pair" class="flex flex-col justify-around my-2 h-60 w-60 text-center pt-2 bg-gray-100 rounded-xl">
-
-                    <div v-if="editingIndex != index" id="NOT EDITING" class="flex flex-col justify-around h-full">
-                        <div class="flex flex-col">
-                            <h1 class="text-2xl font-medium"> {{ pair.word }} </h1>
-                            <p class="text-gray-500"> {{ idLangs[pair.wordLanguageId] }} </p>
-                            <br>
-                            <h1 class="text-2xl font-medium"> {{ pair.translation }} </h1>
-                            <p class="text-gray-500"> {{ idLangs[pair.translationLanguageId] }} </p>
-                        </div>
-                        
-                        <div class="flex gap-4 justify-center">
-                            <button @click="deletePair(pair._id, index)" class="w-6 h-6"><img src="/src/assets/icons/delete.svg" class="w-full h-full"></button>
-                            <button @click="editingIndex = index" class="w-6 h-6"><img src="/src/assets/icons/edit.svg" class="w-full h-full"></button>
-                        </div>
+                <div v-if="editingIndex != index" id="NOT EDITING" class="flex flex-col justify-around h-full">
+                    <div class="flex flex-col">
+                        <h1 class="text-2xl font-medium"> {{ pair.word }} </h1>
+                        <p class="text-gray-500"> {{ idLangs[pair.wordLanguageId] }} </p>
+                        <br>
+                        <h1 class="text-2xl font-medium"> {{ pair.translation }} </h1>
+                        <p class="text-gray-500"> {{ idLangs[pair.translationLanguageId] }} </p>
                     </div>
-
-                    <EditablePair @confirmed="editPair" v-else :pair="pair" :langs="langs"></EditablePair>
+                    
+                    <div class="flex gap-4 justify-center">
+                        <button @click="deletePair(pair._id, index)" class="w-6 h-6"><img src="/src/assets/icons/delete.svg" class="w-full h-full"></button>
+                        <button @click="editingIndex = index" class="w-6 h-6"><img src="/src/assets/icons/edit.svg" class="w-full h-full"></button>
+                    </div>
                 </div>
+
+                <EditablePair @confirmed="editPair" v-else :pair="pair" :langs="langs"></EditablePair>
             </div>
 
             <!-- Add a new pair --> 
-            
+
             <button v-if="!addingPair" @click="addingPair++" class="flex flex-col items-center justify-around my-2 h-60 w-60 text-center pt-2 bg-gray-100 rounded-xl"><h1 class="text-2xl font-medium"> Add pair </h1></button>
 
             <EditablePair @confirmed="addPair" v-else :pair="savedPair" :langs="langs"></EditablePair>
