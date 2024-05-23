@@ -69,6 +69,7 @@
     export default {
         data() {
             return {
+                setId: this.$route.params.id,
                 set: {},
                 pairs: [],
                 langs: [],
@@ -82,11 +83,11 @@
         },
         methods: {
             getPairs: async function() {
-                const { data } = await axios.get(`${BASE_API}/pairs/set/${this.$route.params.id}`);
+                const { data } = await axios.get(`${BASE_API}/pairs/set/${this.setId}`);
                 this.pairs = data;
             },
            getSet: async function() {
-                const { data } = await axios.get(`${BASE_API}/sets/${this.$route.params.id}`);
+                const { data } = await axios.get(`${BASE_API}/sets/${this.setId}`);
                 this.set = data;
             },
             getLanguages: async function() {
