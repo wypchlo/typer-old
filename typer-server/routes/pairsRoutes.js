@@ -50,13 +50,15 @@ router.put('/:id', async(req, res) => {
         const data = req.body;
         if(!id) return res.status(400).json({ error: 'Pair ID is required' });
 
-        const UpdatedPair = Pairs.findByIdAndUpdate(
+        const UpdatedPair = await Pairs.findByIdAndUpdate(
             id, 
             { $set: data },
             { new: true, runValidators: true }
         );
 
         if(!UpdatedPair) return res.status(404).json({ error: 'Pair not found' });
+
+        return res.status(200).json(UpdatedPair);
     }
     catch(error) {
         console.error(`Error updating pair: ${error}`);

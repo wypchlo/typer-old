@@ -14,43 +14,29 @@
 
             <div id="wordContainer" class="flex flex-col">
                 <div v-for="(pair, index) in pairs" :key="pair" class="flex flex-col justify-around my-2 h-60 w-60 text-center pt-2 bg-gray-100 rounded-xl">
-                    <div class="flex flex-col">
-                        <h1 class="text-2xl font-medium"> {{ pair.word }} </h1>
-                        <p class="text-gray-500"> {{ idLangs[pair.wordLanguageId] }} </p>
-                        <br>
-                        <h1 class="text-2xl font-medium"> {{ pair.translation }} </h1>
-                        <p class="text-gray-500"> {{ idLangs[pair.translationLanguageId] }} </p>
+
+                    <div v-if="editingIndex != index" id="NOT EDITING">
+                        <div class="flex flex-col">
+                            <h1 class="text-2xl font-medium"> {{ pair.word }} </h1>
+                            <p class="text-gray-500"> {{ idLangs[pair.wordLanguageId] }} </p>
+                            <br>
+                            <h1 class="text-2xl font-medium"> {{ pair.translation }} </h1>
+                            <p class="text-gray-500"> {{ idLangs[pair.translationLanguageId] }} </p>
+                        </div>
+
+                        <button @click.self="deletePair(pair._id, index)"> delete </button>
+                        <button @click.self="editingIndex = index"> edit </button>
                     </div>
 
-                    <button @click.self="deletePair(pair._id, index)"> delete </button>
+                    <EditablePair @confirmed="editPair" v-if="editingIndex == index" :pair="pair" :langs="langs"></EditablePair>
                 </div>
             </div>
 
             <!-- Add a new pair --> 
             
-            <button v-if="!addingPair" @click="addingPair++" class="flex flex-col items-center justify-around my-2 h-60 w-60 text-center pt-2 bg-gray-100 rounded-xl"> 
-                <h1 class="text-2xl font-medium"> Add pair </h1>
-            </button>
+            <button v-if="!addingPair" @click="addingPair++" class="flex flex-col items-center justify-around my-2 h-60 w-60 text-center pt-2 bg-gray-100 rounded-xl"><h1 class="text-2xl font-medium"> Add pair </h1></button>
 
-            <form v-if="addingPair" @submit.prevent="addPair()" class="flex flex-col justify-around my-2 h-60 w-60 text-center pt-2 bg-gray-100 rounded-xl"> 
-                <div>
-                    <input type="text" v-model="tempPair.word" placeholder="word" class="bg-gray-100 text-2xl font-medium text-center w-full">
-                    <select v-model="tempPair.wordLanguageId" class="text-center bg-gray-100 text-gray-500">
-                        <option disabled selected :value="undefined"> Select a language </option>
-                        <option v-for="lang in langs" :key="lang" :value="lang._id"> {{ lang.language }} </option>
-                    </select>
-                </div>
-
-                <div>
-                    <input type="text" v-model="tempPair.translation" placeholder="translation" class="text-2xl font-medium bg-gray-100 text-center w-full">
-                    <select v-model="tempPair.translationLanguageId" class="text-center bg-gray-100 text-gray-500">
-                        <option disabled selected :value="undefined"> Select a language </option>
-                        <option v-for="lang in langs" :key="lang" :value="lang._id" selected=""> {{ lang.language }} </option>
-                    </select>
-                </div>
-
-                <button type="submit"> Confirm </button>
-            </form>
+            <EditablePair @confirmed="addPair" v-if="addingPair" :pair="savedPair" :langs="langs"></EditablePair>
         </section>
 
         <hr>
@@ -63,6 +49,7 @@
 
 <script>
     import axios from 'axios';
+    import EditablePair from '../components/EditablePair.vue';
 
     const BASE_API = 'http://localhost:3000/api';
 
@@ -74,8 +61,10 @@
                 pairs: [],
                 langs: [],
                 idLangs: {},
-                tempPair: {},
-                addingPair: false
+
+                savedPair: {},
+                editingIndex: null,
+                addingPair: false,
             }
         },
         async mounted() {
@@ -105,13 +94,13 @@
                     console.error(`Error while deleting pair: ${error}`);
                 }
             },
-            addPair: async function() {
+            addPair: async function(pair) {
                 try {
-                    this.tempPair.setId = this.set._id;
-                    await axios.post(`${BASE_API}/pairs/add`, this.tempPair);
+                    pair.setId = this.set._id;
+                    await axios.post(`${BASE_API}/pairs/add`, pair);
 
-                    const { wordLanguageId, translationLanguageId } = this.tempPair;
-                    this.tempPair = { wordLanguageId, translationLanguageId };
+                    const { wordLanguageId, translationLanguageId } = pair;
+                    this.savedPair = { wordLanguageId, translationLanguageId };
                     this.addingPair = false;
 
                     await this.getPairs();
@@ -119,7 +108,21 @@
                 catch(error) {
                     console.error(`Error while adding pair to set: ${error}`);
                 }
+            },
+            editPair: async function(updatedPair) {
+                try {
+                    await axios.put(`${BASE_API}/pairs/${updatedPair._id}`, updatedPair);
+
+                    this.pairs.splice(this.editingIndex, 1, updatedPair);
+                    this.editingIndex = null;
+                }
+                catch(errror) {
+                    console.error(`Error while editing pair: ${error}`);
+                }
             }
+        },
+        components: {
+            EditablePair
         }
     }
 </script>
