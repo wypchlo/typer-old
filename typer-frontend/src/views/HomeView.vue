@@ -5,12 +5,19 @@
         <div id="container" class="flex justify-center gap-4 py-20">
             <!-- List of sets -->
 
-            <button @click="showSetDetails(set._id)" v-for="(set, index) in sets" :key="set.name" class="justify-around items-center flex flex-col h-80 w-60 text-center pt-2 bg-gray-100 rounded-xl">
-                <div>
-                    <h1 class="text-3xl"> {{ set.name }} </h1>
-                    <p class="text-gray-500"> {{ set.description }} </p>
+            <button @click="showSetDetails(set._id, index)" v-for="(set, index) in sets" :key="set">
+                <div v-if="editingIndex != index" class="justify-around items-center flex flex-col h-80 w-60 text-center pt-2 bg-gray-100 rounded-xl">
+                    <div>
+                        <h1 class="text-3xl"> {{ set.name }} </h1>
+                        <p class="text-gray-500"> {{ set.description }} </p>
+                    </div>
+                    <div class="flex gap-4 justify-center"> 
+                        <button @click.stop="deleteSet(set, index)"><img class="h-6 w-6" src="/src/assets/icons/delete.svg"></button>
+                        <button @click.stop="editingIndex = index"><img class="h-6 w-6" src="/src/assets/icons/edit.svg"></button>
+                    </div>
                 </div>
-                <button @click.stop="deleteSet(set, index)"><img class="h-6 w-6" src="/src/assets/icons/delete.svg"></button>
+
+                <EditableSet v-else @confirmed="editSet" :set="set"></EditableSet>
             </button>
             
             <!-- Add new set button -->
@@ -89,6 +96,10 @@
                     console.log('failed to delete set with error: ' + error)
                 } 
             },
+            editSet: async function(set) {
+                await axios.put(`${BASE_API}/sets/${set._id}`, set);
+                this.editingIndex = null;
+            },
             addLang: async function() {
                 await axios.post(`${BASE_API}/languages/add`, { language: this.tempLang });
                 this.getLangs();
@@ -98,7 +109,8 @@
                 await axios.delete(`${BASE_API}/languages/${id}`,);
                 this.langs.splice(index, 1);
             },
-            showSetDetails: function(id) {
+            showSetDetails: function(id, index) {
+                if(this.editingIndex == index) return;
                 this.$router.push({ name: 'SetDetails', params: { id: id } });
             }
         },

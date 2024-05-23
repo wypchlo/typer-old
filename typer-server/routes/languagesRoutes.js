@@ -49,6 +49,8 @@ router.put('/:id', async(req, res) => {
         );
 
         if(!UpdatedLang) return res.status(404).json({ error: 'Language not found' });
+
+        res.status(200).json(UpdatedLang);
     }
     catch(error) {
         console.error(`Error updating language: ${error}`);

@@ -48,6 +48,8 @@ router.put('/:id', async(req, res) => {
         );
 
         if(!UpdatedSet) return res.status(404).json({ error: 'Set not found' });
+
+        res.status(200).json({ message: 'Set updated successfully' });
     }
     catch(error) {
         console.error(`Error updating set: ${error}`);
