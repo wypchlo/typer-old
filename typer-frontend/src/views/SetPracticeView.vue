@@ -4,8 +4,18 @@
             <div :style="`width: ${pBarWidth}%`" class="h-full bg-gray-400 rounded-full transition-all"></div>
         </div>
     </header>
-    <div> {{ pairs.length }} </div>
-    <button @click="correctAnswer()"> Progress </button>
+    
+    <div class="flex flex-col mt-6 justify-center items-center gap-4">
+        <div class="flex flex-col items-center justify-around my-2 h-60 w-60 text-center pt-2 bg-gray-100 rounded-xl"> 
+            <h1 class="text-2xl font-medium"> {{ current.word }} </h1>
+        </div>
+
+        <div @submit.prevent="answered()" class="flex flex-col items-center justify-center p-6 text-center bg-gray-100 rounded-xl"> 
+            <form> 
+                <input type="text" v-model="answer" class="rounded-sm w-60 h-10 text-center text-2xl font-medium">
+            </form>
+        </div> 
+    </div>
 </template>
 
 <script>
@@ -22,14 +32,18 @@
                 langs: [],
                 idLangs: {},
 
+                answer: null,
+                current: {},
+                currentIndex: null,
                 pBarWidth: 0,
                 pairAmount: null,
-                correct: []
+                correctPairs: []
             }
         },
         async mounted() {
             await Promise.all([this.getSet(), this.getPairs(), this.getLanguages()]);
             this.pairAmount = this.pairs.length;
+            this.pickPair();
         },
         methods: {
             getPairs: async function() {
@@ -45,9 +59,28 @@
                 this.langs = data;
                 for(let lang of data) this.idLangs[lang._id] = lang.language;
             },
-            correctAnswer: function() {
-                this.correct.push(this.pairs[0]);
-                this.pBarWidth = this.correct.length / this.pairAmount * 100;
+
+
+            pickPair: function() {
+                const pairIndex = Math.floor(Math.random() * this.pairs.length);
+                this.current = this.pairs[pairIndex];
+                this.currentIndex = pairIndex;
+            },
+            answered: function() {
+                if(this.answer == null) return this.pickPair();
+
+                const answer = this.answer.toLowerCase().trim();
+                const translation = this.current.translation.toLowerCase().trim();
+                const correct = (answer == translation);
+                
+                if(correct) {
+                    this.correctPairs.push(this.current);
+                    this.pairs.splice(this.currentIndex, 1);
+                    this.pBarWidth = this.correctPairs.length / this.pairAmount * 100;
+                }
+                
+                this.answer = null;
+                if(this.correctPairs.length != this.pairAmount) this.pickPair();
             }
         }
     }
