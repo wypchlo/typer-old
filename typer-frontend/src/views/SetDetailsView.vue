@@ -15,7 +15,7 @@
             <div id="wordContainer" class="flex flex-col">
                 <div v-for="(pair, index) in pairs" :key="pair" class="flex flex-col justify-around my-2 h-60 w-60 text-center pt-2 bg-gray-100 rounded-xl">
 
-                    <div v-if="editingIndex != index" id="NOT EDITING">
+                    <div v-if="editingIndex != index" id="NOT EDITING" class="flex flex-col justify-around h-full">
                         <div class="flex flex-col">
                             <h1 class="text-2xl font-medium"> {{ pair.word }} </h1>
                             <p class="text-gray-500"> {{ idLangs[pair.wordLanguageId] }} </p>
@@ -23,9 +23,11 @@
                             <h1 class="text-2xl font-medium"> {{ pair.translation }} </h1>
                             <p class="text-gray-500"> {{ idLangs[pair.translationLanguageId] }} </p>
                         </div>
-
-                        <button @click.self="deletePair(pair._id, index)"> delete </button>
-                        <button @click.self="editingIndex = index"> edit </button>
+                        
+                        <div class="flex gap-4 justify-center">
+                            <button @click="deletePair(pair._id, index)" class="w-6 h-6"><img src="/src/assets/icons/delete.svg" class="w-full h-full"></button>
+                            <button @click="editingIndex = index" class="w-6 h-6"><img src="/src/assets/icons/edit.svg" class="w-full h-full"></button>
+                        </div>
                     </div>
 
                     <EditablePair @confirmed="editPair" v-if="editingIndex == index" :pair="pair" :langs="langs"></EditablePair>
