@@ -324,6 +324,10 @@ export default {
         '"Courier New"',
         'monospace',
       ],
+      raleway: [
+        '"Raleway"',
+        'sans-serif'
+      ]
     },
     fontSize: {
       xs: ['0.75rem', { lineHeight: '1rem' }],
