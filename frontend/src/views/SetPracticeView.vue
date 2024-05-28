@@ -135,7 +135,7 @@
 
 <style>
     :root{
-        --box-frame: #334155;
+        --box-frame: theme(colors.slate.700);
     }
 
     .box{

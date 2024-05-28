@@ -59,9 +59,26 @@ router.put('/:id', async(req, res) => {
 
 router.delete('/:id', async(req, res) => {
     try {
-        // Multiple ids provided
+        const id = req.params.id;
+        if(!id) return res.status(400).json({ error: 'Set ID is required' });
 
+        await deletePairs([id]);
+
+        const result = await Sets.deleteOne({ _id: id });
+        if(result.deletedCount === 0) return res.status(404).json({ error: 'Set not found' });
+
+        res.status(200).json({ message: 'Set deleted successfully' });
+    }
+    catch(error) {
+        console.error(`Error deleting set: ${error}`);
+        res.status(500).json({ error: 'Failed to delete set' });
+    }
+});
+
+router.delete('/', async(req, res) => {
+    try {
         const ids = req.body.ids;
+
         if(ids) {
             await deletePairs(ids);
 
@@ -70,18 +87,6 @@ router.delete('/:id', async(req, res) => {
 
             return res.status(200).json({ message: 'Sets deleted successfully' })
         }
-
-        // One id provided
-
-        const id = req.params.id;
-        if(!id) return res.status(400).json({ error: 'Set ID is required' });
-
-        await Pairs.deleteMany({ setId: id })
-
-        const result = await Sets.deleteOne({ _id: id });
-        if(result.deletedCount === 0) return res.status(404).json({ error: 'Set not found' });
-
-        res.status(200).json({ message: 'Set deleted successfully' });
     }
     catch(error) {
         console.error(`Error deleting set: ${error}`);
