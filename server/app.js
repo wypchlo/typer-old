@@ -9,7 +9,7 @@ console.clear();
 
 console.log('Connecting to the database...');
 
-mongoose.connect('mongodb://localhost:27017/typer')
+mongoose.connect('mongodb://192.168.125.199:27017/typer')
     .catch((error) => console.log(`Error while connecting to the database: ${error}`));
 
 // basic app setup
@@ -18,7 +18,12 @@ console.log('Setting up app...')
 
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+    origin: ['http://localhost:5173', 'http://192.168.125.199:5173'],
+    optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 app.use(bodyParser.json())
 app.use(express.static('public'));
 
@@ -34,6 +39,6 @@ app.use('/api/languages', require('./routes/languagesRoutes'));
 
 const port = 3000;
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
     console.log('Server is running on http://localhost:'+'3000')
 });

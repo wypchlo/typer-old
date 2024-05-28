@@ -59,7 +59,7 @@
     import axios from 'axios';
     import EditableSet from '../components/EditableSet.vue';
     
-    const BASE_API = 'http://localhost:3000/api';
+    const BASE_API = 'http://192.168.125.199:3000/api';
 
     export default {
         data() {
@@ -85,7 +85,7 @@
                 this.langs = data;
             },
             addSet: async function(newSet){
-                await axios.post('http://localhost:3000/api/sets/add', newSet);
+                await axios.post(`${BASE_API}/sets/add`, newSet);
                 this.addingSet = false;
                 this.getSets();
             },

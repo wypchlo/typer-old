@@ -46,7 +46,7 @@
     import axios from 'axios';
     import EditablePair from '../components/EditablePair.vue';
 
-    const BASE_API = 'http://localhost:3000/api';
+    const BASE_API = 'http://192.168.125.199:3000/api';
 
     export default {
         data() {
