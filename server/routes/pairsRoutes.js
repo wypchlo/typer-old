@@ -71,6 +71,11 @@ router.delete('/:id', async(req, res) => {
     res.status(response.status).json(response);
 });
 
+router.delete('/', async(req, res) => {
+    const response = await deletePairs(req.body.ids);
+    res.status(response.status).json(response);
+})
+
 router.get('/set/:id', async(req, res) => {
     try {
         const id = req.params.id;

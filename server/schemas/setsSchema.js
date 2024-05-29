@@ -10,6 +10,10 @@ const setsSchema = new Schema({
     description: {
         type: String,
         default: ''
+    },
+    createdDate: {
+        type: Date,
+        default: Date.now
     }
 });
 

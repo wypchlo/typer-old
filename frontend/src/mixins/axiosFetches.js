@@ -20,18 +20,20 @@ export const axiosFetchesMixin = {
         async deleteSets(ids) {
             await axios.delete(`${BASE_API}/sets`, { data: { ids } })
         },
-        async editSet(set) {
-            await axios.put(`${BASE_API}/sets/${set._id}`, set);
-            this.editingIndex = null;
+        async getSetPairs(setId) {
+            const { data } = await axios.get(`${BASE_API}/pairs/set/${setId}`);
+            return data;
         },
-        async addLang() {
-            await axios.post(`${BASE_API}/languages/add`, { language: this.tempLang });
-            this.getLangs();
-            this.tempLang = null;
+        async getSet(setId) {
+            const { data } = await axios.get(`${BASE_API}/sets/${setId}`);
+            console.log(data);
+            return data;
         },
-        async deleteLang(id, index) {
-            await axios.delete(`${BASE_API}/languages/${id}`,);
-            this.langs.splice(index, 1);
+        async addPair(pair) {
+            await axios.post(`${BASE_API}/pairs/add`, pair);
+        },
+        async deletePairs(ids) {
+            await axios.delete(`${BASE_API}/pairs`, { data: { ids } })
         },
     }
 }

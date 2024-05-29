@@ -6,7 +6,7 @@ const deletePairs = require('../modules/deletePairs');
 
 router.get('/', async(req, res) => { 
     try {
-        const sets = await Sets.find();
+        const sets = await Sets.find().sort({createdDate: -1});
         res.status(200).json(sets);
     }
     catch(error) {
@@ -99,7 +99,7 @@ router.get('/:id', async(req, res) => {
         const id = req.params.id;
         if(!id) return res.status(400).json({ error: 'Set ID is required' });
         
-        const set = await Sets.findOne({ _id: id });    
+        const set = await Sets.findOne({ _id: id });
         res.status(200).json(set);
     }
     catch(error) {
